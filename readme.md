@@ -26,4 +26,29 @@ https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/
 1. Clone the repository or download source code
 2. In the root folder, run:
 
+   ```bash
+   npm install
+   ```
+
+## Running the Application
+
+Development mode with auto-reload:
+
+```bash
+npm run dev
+```
+
+## Running Tests
+
+```bash
+npm test
+```
+
+## API Endpoints
+- `GET /` - Health check endpoint
+- `POST /orders` - Create a new order
+- `GET /orders` - Get all orders
+- `PUT /orders/:id` - Update an order
+- `POST /orders/:id/complete` - Complete an order
+- `DELETE /orders/:id` - Delete an order
 
