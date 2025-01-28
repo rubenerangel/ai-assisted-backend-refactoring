@@ -1,0 +1,32 @@
+{
+  "name": "refactoring-mvc-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev": "concurrently \"tsc --watch\" \"node --watch dist/app.js\"",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^22.10.10",
+    "@types/mongoose": "^5.11.97",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
+    "jest": "^29.7.0",
+    "concurrently": "^8.2.2",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^6.0.2",
+    "ts-jest": "^29.1.1"
+  }
+}
