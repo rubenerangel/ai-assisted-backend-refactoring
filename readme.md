@@ -3,7 +3,7 @@
 
 Este proyecto es un backend desarrollado con **Node.js**, **Express** y **MongoDB**, que expone una API REST para gestionar pedidos.
 
-Es el punto de partida que usaremos a lo largo de la masterclass para refactorizar desde un diseño en **MVC** (con malas prácticas comunes) hacia una **Arquitectura Hexagonal** más limpia, testable y sostenible.
+Es el punto de partida que usaremos a lo largo de la masterclass para refactorizar desde un diseño en **MVC** (con malas prácticas comunes) hacia una **Arquitectura Hexagonal** más testable y sostenible.
 
 ---
 
