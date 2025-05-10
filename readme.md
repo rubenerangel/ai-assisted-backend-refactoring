@@ -1,4 +1,5 @@
 # 🛠️ Masterclass: Refactoring Backend asistido por IA  
+(https://softwarecrafters.io/masterclass-refactoring-ia)[Más info aquí]
 ## Order Management API
 
 Este proyecto es un backend desarrollado con **Node.js**, **Express** y **MongoDB**, que expone una API REST para gestionar pedidos.
