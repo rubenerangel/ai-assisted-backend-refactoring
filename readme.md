@@ -1,53 +1,76 @@
-# Masterclass: Refactoring Backend asistido por IA
+# 🛠️ Masterclass: Refactoring Backend asistido por IA  
 ## Order Management API
 
-This is a backend project developed with Node.js, Express and MongoDB that implements a REST API for order management.
+Este proyecto es un backend desarrollado con **Node.js**, **Express** y **MongoDB**, que expone una API REST para gestionar pedidos.
 
-## Technologies Used
+Es el punto de partida que usaremos a lo largo de la masterclass para refactorizar desde un diseño en **MVC** (con malas prácticas comunes) hacia una **Arquitectura Hexagonal** más limpia, testable y sostenible.
 
-- Node.js
-- Express
-- MongoDB
-- TypeScript
-- Jest (for testing)
+---
 
-## Prerequisites
+## 🧱 Tecnologías utilizadas
 
-- Node.js (version 20 or higher)
-- npm or yarn as package manager
-- MongoDB running locally or remotely (connection string is hardcoded in app.ts, you may want to adapt it to your environment)
+- Node.js  
+- Express  
+- MongoDB  
+- TypeScript  
+- Jest (para testing)
 
-For MongoDB installation, follow the instructions at:
+---
+
+## 📦 Requisitos previos
+
+- Node.js (versión 20 o superior)  
+- npm o yarn como gestor de paquetes  
+- MongoDB local o remoto  
+  - La conexión está hardcodeada en `app.ts`, puedes adaptarla según tu entorno.
+
+👉 Puedes seguir las instrucciones de instalación de MongoDB aquí:  
 https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/
 
-## Installation & Setup
+---
 
-1. Clone the repository or download source code
-2. In the root folder, run:
+## 🚀 Instalación y ejecución
+
+1. Clona el repositorio o descarga el código fuente.  
+2. En la raíz del proyecto, ejecuta:
 
    ```bash
    npm install
    ```
 
-## Running the Application
+3. Para ejecutar la aplicación en modo desarrollo (con autoreload):
 
-Development mode with auto-reload:
+   ```bash
+   npm run dev
+   ```
 
-```bash
-npm run dev
-```
+---
 
-## Running Tests
+## 🧪 Testing
+
+Para ejecutar los tests:
 
 ```bash
 npm test
 ```
 
-## API Endpoints
-- `GET /` - Health check endpoint
-- `POST /orders` - Create a new order
-- `GET /orders` - Get all orders
-- `PUT /orders/:id` - Update an order
-- `POST /orders/:id/complete` - Complete an order
-- `DELETE /orders/:id` - Delete an order
+---
+
+## 🌿 Ramas importantes
+
+- `initial_tests`: contiene los **tests end-to-end funcionando**. Si te atascas en esa parte de la masterclass, puedes partir desde aquí para retomar con una base estable.
+  
+- `sol`: incluye la **solución final completa con el refactor ya aplicado**. Úsala como referencia o para comparar tu progreso, no como punto de partida.
+
+---
+
+## 📡 Endpoints disponibles
+
+- `GET /` → Health check  
+- `POST /orders` → Crear un nuevo pedido  
+- `GET /orders` → Listar todos los pedidos  
+- `PUT /orders/:id` → Actualizar un pedido  
+- `POST /orders/:id/complete` → Completar un pedido  
+- `DELETE /orders/:id` → Eliminar un pedido
+
 
