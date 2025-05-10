@@ -1,4 +1,4 @@
-# Refactoring MVC Backend
+# Masterclass: Refactoring Backend asistido por IA
 ## Order Management API
 
 This is a backend project developed with Node.js, Express and MongoDB that implements a REST API for order management.
@@ -10,7 +10,6 @@ This is a backend project developed with Node.js, Express and MongoDB that imple
 - MongoDB
 - TypeScript
 - Jest (for testing)
-- Supertest (for endpoint testing)
 
 ## Prerequisites
 
