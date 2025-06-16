@@ -7,9 +7,14 @@ import {
     completeOrder,
     deleteOrder
 } from './controllers/orderController';
+import dotenv from 'dotenv';
 
-const DB_URL = 'mongodb://localhost:27017/db_orders';
-const PORT = 3002;
+dotenv.config({
+    path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+});
+
+const DB_URL: string = process.env.DB_URL!
+const PORT = process.env.PORT;
 
 mongoose
     .connect(DB_URL)
