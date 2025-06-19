@@ -72,5 +72,18 @@ describe('POST /orders', () => {
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 80');
     })
+
+    it('does not allowed to create an order when missing items', async () => {
+        const order = {
+            items: [],
+            shippingAddress: 'Irrelevant street 123'
+        }
+
+        const response = await request(server)
+            .post('/orders')
+            .send(order)
+        expect(response.status).toBe(400);
+        expect(response.text).toBe('The order must have at least one item');
+    })
 })
 
