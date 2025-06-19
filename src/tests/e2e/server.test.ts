@@ -3,8 +3,26 @@ import {createServer} from '../../app';
 import dotenv from "dotenv";
 import {Server} from 'node:http'
 import mongoose from "mongoose";
-
 dotenv.config({path: '.env.test'});
+
+async function createAValidOrder(server: Server, discountCode?: string) {
+    const order = {
+        items: [
+            {
+                productId: '1',
+                quantity: 1,
+                price: 100
+            }
+        ],
+        shippingAddress: 'Irrelevant street 123',
+        discountCode: discountCode
+    }
+
+    const response = await request(server)
+        .post('/orders')
+        .send(order)
+    return response;
+}
 
 describe('Status endpoint', () => {
     let server: Server;
@@ -39,37 +57,15 @@ describe('POST /orders', () => {
     })
 
     it('should create a new order successfully', async () => {
-        const order = {
-            items: [{
-                productId: '1',
-                quantity: 1,
-                price: 100
-            }],
-            shippingAddress: 'Irrelevant street 123'
-        }
-
-        const response = await request(server)
-            .post('/orders')
-            .send(order)
+        const response = await createAValidOrder(server);
 
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 100');
     })
 
     it('create a new order whit discount successfully', async () => {
-        const order = {
-            items: [{
-                productId: '1',
-                quantity: 1,
-                price: 100
-            }],
-            shippingAddress: 'Irrelevant street 123',
-            discountCode: 'DISCOUNT20'
-        }
+        const response = await createAValidOrder(server, 'DISCOUNT20');
 
-        const response = await request(server)
-            .post('/orders')
-            .send(order)
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 80');
     })
@@ -115,20 +111,7 @@ describe('GET /orders', () => {
     })
 
     it('list one order after creating it', async () => {
-        const order = {
-            items: [
-                {
-                    productId: '1',
-                    quantity: 1,
-                    price: 100
-                },
-            ],
-            shippingAddress: 'Irrelevant street 123'
-        }
-
-        await request(server)
-            .post('/orders')
-            .send(order)
+        await createAValidOrder(server);
 
         const response = await request(server)
             .get('/orders');
@@ -137,4 +120,3 @@ describe('GET /orders', () => {
         expect(response.body.length).toBe(1);
     })
 })
-
