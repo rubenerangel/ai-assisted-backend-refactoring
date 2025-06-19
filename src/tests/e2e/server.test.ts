@@ -2,6 +2,7 @@ import request from 'supertest';
 import {createServer} from '../../app';
 import dotenv from "dotenv";
 import {Server} from 'node:http'
+import mongoose from "mongoose";
 
 dotenv.config({path: '.env.test'});
 
@@ -84,6 +85,56 @@ describe('POST /orders', () => {
             .send(order)
         expect(response.status).toBe(400);
         expect(response.text).toBe('The order must have at least one item');
+    })
+})
+
+describe('GET /orders', () => {
+    let server: Server;
+
+    beforeAll(async () => {
+        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        server = await createServer(3003, dbUrl)
+
+        await mongoose.connection.dropDatabase();
+    })
+
+    afterEach(async () => {
+        await mongoose.connection.dropDatabase();
+    })
+
+    afterAll(() => {
+        server.close()
+    })
+
+    it('list no orders when store is empty', async () => {
+        const response = await request(server)
+            .get('/orders');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([]);
+    })
+
+    it('list one order after creating it', async () => {
+        const order = {
+            items: [
+                {
+                    productId: '1',
+                    quantity: 1,
+                    price: 100
+                },
+            ],
+            shippingAddress: 'Irrelevant street 123'
+        }
+
+        await request(server)
+            .post('/orders')
+            .send(order)
+
+        const response = await request(server)
+            .get('/orders');
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(1);
     })
 })
 
