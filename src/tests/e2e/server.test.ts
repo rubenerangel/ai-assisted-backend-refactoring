@@ -336,4 +336,17 @@ describe('PUT /orders/:id', () => {
         expect(updateResponse.status).toBe(404);
         expect(updateResponse.text).toBe('Order not found');
     })
+
+    it('updates an order with shipping address successfully', async () => {
+        const order = await createAValidOrder(server);
+
+        const updateResponse = await request(server)
+            .put(`/orders/${order._id}`)
+            .send({
+                shippingAddress: 'New Address 456',
+            });
+
+        expect(updateResponse.status).toBe(200);
+        expect(updateResponse.text).toBe('Order updated. New status: CREATED');
+    })
 })
