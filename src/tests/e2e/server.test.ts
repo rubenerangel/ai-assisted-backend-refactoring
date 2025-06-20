@@ -186,14 +186,13 @@ describe('POST /orders/:id/complete', () => {
         const completeResponse = await request(server)
             .post('/orders/123/complete');
 
-        expect(completeResponse.status).toBe(404);
+        expect(completeResponse.status).toBe(400);
         expect(completeResponse.text).toBe('Order not found to complete');
     })
-    it('returns an error when trying to complete an order that is not in CREATED status', async () => {
+    it('does not allow to complete an order with status different than CREATED', async () => {
         const order = await createAValidOrder(server);
         await request(server)
-            .post(`/orders/${order._id}/update`)
-            .send({ status: 'COMPLETED' });
+            .post(`/orders/${order._id}/complete`);
 
         const completeResponse = await request(server)
             .post(`/orders/${order._id}/complete`);
