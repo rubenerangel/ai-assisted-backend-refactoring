@@ -15,12 +15,17 @@ async function createAValidOrder(server: Server, discountCode?: string) {
             }
         ],
         shippingAddress: 'Irrelevant street 123',
-        discountCode: discountCode
+        discountCode
     }
 
-    return await request(server)
+    await request(server)
         .post('/orders')
         .send(order);
+
+    const response = await request(server)
+        .get('/orders');
+
+    return response.body[0];
 }
 
 describe('Status endpoint', () => {
@@ -117,5 +122,37 @@ describe('GET /orders', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(1);
+    })
+})
+
+describe('DELETE /orders/:id', () => {
+    let server: Server;
+    beforeAll(async () => {
+        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        server = await createServer(3003, dbUrl)
+
+        await mongoose.connection.dropDatabase();
+    })
+
+    afterAll(() => {
+        server.close()
+    })
+
+    it('delete an order successfully', async () => {
+        const order = await createAValidOrder(server);
+
+        const deleteResponse = await request(server)
+            .delete(`/orders/${order._id}`);
+
+        expect(deleteResponse.status).toBe(200);
+        expect(deleteResponse.text).toBe('Order deleted');
+    })
+
+    it('returns an error when trying to delete an order that does not exist', async () => {
+        const deleteResponse = await request(server)
+            .delete(`/orders/123`);
+
+        expect(deleteResponse.status).toBe(400);
+        expect(deleteResponse.text).toBe('Order not found');
     })
 })
