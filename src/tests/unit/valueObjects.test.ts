@@ -1,4 +1,4 @@
-import {Address, PositiveNumber} from "../../domain/valueObject";
+import {Address, Id, PositiveNumber} from "../../domain/valueObject";
 
 describe('A positive number', () => {
     it('Allows positive values', () => {
@@ -21,8 +21,12 @@ describe('An address', () => {
         expect(() => Address.create('')).toThrowError('Address cannot be empty');
         expect(() => Address.create('   ')).toThrow('Address cannot be empty');
     });
+})
 
-    // it('Does not allow addresses with only spaces', () => {
-    //
-    // });
+describe('An Id', () => {
+    it('Creates a unique identifier', () => {
+        const id1 = Id.create();
+        const id2 = Id.create();
+        expect(id1.value).not.toBe(id2.value);
+    })
 })
