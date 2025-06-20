@@ -130,8 +130,6 @@ describe('DELETE /orders/:id', () => {
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         server = await createServer(3003, dbUrl)
-
-        await mongoose.connection.dropDatabase();
     })
 
     afterAll(() => {
@@ -148,11 +146,11 @@ describe('DELETE /orders/:id', () => {
         expect(deleteResponse.text).toBe('Order deleted');
     })
 
-    it('returns an error when trying to delete an order that does not exist', async () => {
+    it('returns an error when trying to delete an order that does not exist order', async () => {
         const deleteResponse = await request(server)
             .delete(`/orders/123`);
 
-        expect(deleteResponse.status).toBe(400);
+        expect(deleteResponse.status).toBe(404);
         expect(deleteResponse.text).toBe('Order not found');
     })
 })
