@@ -9,6 +9,15 @@ describe('A positive number', () => {
     it('Does not allow negative values', () => {
         expect(() => PositiveNumber.create(-1)).toThrow('Value must be a positive number');
     });
+
+    it('multiplies two positive numbers', () => {
+        const aPositiveNumber = PositiveNumber.create(2);
+        const anotherPositiveNumber = PositiveNumber.create(3);
+
+        const result = aPositiveNumber.multiply(anotherPositiveNumber);
+
+        expect(result).toBe(6);
+    })
 })
 
 describe('An address', () => {
