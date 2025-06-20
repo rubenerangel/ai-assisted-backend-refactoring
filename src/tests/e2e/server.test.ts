@@ -282,3 +282,61 @@ describe('POST /orders/:id/complete', () => {
         expect(completeResponse.text).toBe(`Cannot complete an order with status: COMPLETED`);
     })
 })
+
+describe('PUT /orders/:id', () => {
+    let server: Server;
+
+    beforeAll(async () => {
+        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        server = await createServer(3003, dbUrl)
+        await mongoose.connection.dropDatabase();
+    });
+
+    afterEach(async () => {
+        await mongoose.connection.dropDatabase();
+    })
+
+    afterAll(() => {
+        server.close()
+    })
+
+    it('updates an order successfully', async () => {
+        const order = await createAValidOrder(server);
+
+        const updateResponse = await request(server)
+            .put(`/orders/${order._id}`)
+            .send({
+                status: 'COMPLETED',
+            });
+
+        expect(updateResponse.status).toBe(200);
+        expect(updateResponse.text).toBe(`Order updated. New status: COMPLETED`);
+    })
+
+    it('does not allow to update an order without items', async () => {
+        const order = await createAValidOrder(server);
+
+        const updateResponse = await request(server)
+            .put(`/orders/${order._id}`)
+            .send({
+                items: [],
+                status: 'COMPLETED',
+            });
+
+        expect(updateResponse.status).toBe(400);
+        expect(updateResponse.text).toBe('Cannot complete an order without items');
+    })
+
+    it('updates an order with discount code successfully', async () => {
+        const order = await createAValidOrder(server);
+
+        const updateResponse = await request(server)
+            .put(`/orders/${order._id}`)
+            .send({
+                discountCode: 'DISCOUNT20',
+            });
+
+        expect(updateResponse.status).toBe(200);
+        expect(updateResponse.text).toBe('Order updated. New status: CREATED');
+    })
+})
