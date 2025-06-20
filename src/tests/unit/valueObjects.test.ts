@@ -16,7 +16,7 @@ describe('A positive number', () => {
 
         const result = aPositiveNumber.multiply(anotherPositiveNumber);
 
-        expect(result).toBe(6);
+        expect(result.value).toBe(6);
     })
 })
 
