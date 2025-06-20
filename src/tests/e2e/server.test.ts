@@ -78,7 +78,19 @@ describe('POST /orders', () => {
     })
 
     it('create a new order whit discount successfully', async () => {
-        const response = await createAValidOrder(server, 'DISCOUNT20');
+        const order = {
+            items: [
+                {
+                    productId: "1",
+                    quantity: 1,
+                    price: 100
+                },
+            ],
+            discountCode: 'DISCOUNT20',
+            shippingAddress: "Irrelevant Street 123",
+        }
+
+        const response = await request(server).post('/orders').send(order);
 
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 80');
