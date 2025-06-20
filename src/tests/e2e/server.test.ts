@@ -3,6 +3,7 @@ import {createServer} from '../../app';
 import dotenv from "dotenv";
 import {Server} from 'node:http'
 import mongoose from "mongoose";
+import {OrderStatus} from "../../domain/models";
 dotenv.config({path: '.env.test'});
 
 async function createAValidOrder(server: Server, discountCode?: string) {
@@ -306,7 +307,7 @@ describe('PUT /orders/:id', () => {
         const updateResponse = await request(server)
             .put(`/orders/${order._id}`)
             .send({
-                status: 'COMPLETED',
+                status: OrderStatus.Completed,
             });
 
         expect(updateResponse.status).toBe(200);
@@ -330,7 +331,7 @@ describe('PUT /orders/:id', () => {
         const updateResponse = await request(server)
             .put('/orders/123')
             .send({
-                status: 'COMPLETED',
+                status: OrderStatus.Completed,
             });
 
         expect(updateResponse.status).toBe(404);
