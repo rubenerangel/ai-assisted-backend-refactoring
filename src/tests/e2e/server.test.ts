@@ -18,10 +18,9 @@ async function createAValidOrder(server: Server, discountCode?: string) {
         discountCode: discountCode
     }
 
-    const response = await request(server)
+    return await request(server)
         .post('/orders')
-        .send(order)
-    return response;
+        .send(order);
 }
 
 describe('Status endpoint', () => {
