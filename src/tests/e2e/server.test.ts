@@ -154,3 +154,51 @@ describe('DELETE /orders/:id', () => {
         expect(deleteResponse.text).toBe('Order not found');
     })
 })
+
+describe('POST /orders/:id/complete', () => {
+    let server: Server;
+
+    beforeAll(async () => {
+        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        server = await createServer(3003, dbUrl)
+        await mongoose.connection.dropDatabase();
+    });
+
+    afterEach(async () => {
+        await mongoose.connection.dropDatabase();
+    })
+
+    afterAll(() => {
+        server.close()
+    })
+
+    it('completes an order successfully', async () => {
+        const order = await createAValidOrder(server);
+
+        const completeResponse = await request(server)
+            .post(`/orders/${order._id}/complete`);
+
+        expect(completeResponse.status).toBe(200);
+        expect(completeResponse.text).toBe(`Order with id ${order._id} completed`);
+    })
+
+    it('returns an error when trying to complete an order that does not exist', async () => {
+        const completeResponse = await request(server)
+            .post('/orders/123/complete');
+
+        expect(completeResponse.status).toBe(404);
+        expect(completeResponse.text).toBe('Order not found to complete');
+    })
+    it('returns an error when trying to complete an order that is not in CREATED status', async () => {
+        const order = await createAValidOrder(server);
+        await request(server)
+            .post(`/orders/${order._id}/update`)
+            .send({ status: 'COMPLETED' });
+
+        const completeResponse = await request(server)
+            .post(`/orders/${order._id}/complete`);
+
+        expect(completeResponse.status).toBe(400);
+        expect(completeResponse.text).toBe(`Cannot complete an order with status: COMPLETED`);
+    })
+})
