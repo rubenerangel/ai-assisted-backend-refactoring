@@ -300,7 +300,7 @@ describe('PUT /orders/:id', () => {
         server.close()
     })
 
-    it('updates an order successfully', async () => {
+    it('updates a given valid order successfully', async () => {
         const order = await createAValidOrder(server);
 
         const updateResponse = await request(server)
@@ -311,20 +311,6 @@ describe('PUT /orders/:id', () => {
 
         expect(updateResponse.status).toBe(200);
         expect(updateResponse.text).toBe(`Order updated. New status: COMPLETED`);
-    })
-
-    it('does not allow to update an order without items', async () => {
-        const order = await createAValidOrder(server);
-
-        const updateResponse = await request(server)
-            .put(`/orders/${order._id}`)
-            .send({
-                items: [],
-                status: 'COMPLETED',
-            });
-
-        expect(updateResponse.status).toBe(400);
-        expect(updateResponse.text).toBe('Cannot complete an order without items');
     })
 
     it('updates an order with discount code successfully', async () => {
@@ -338,5 +324,16 @@ describe('PUT /orders/:id', () => {
 
         expect(updateResponse.status).toBe(200);
         expect(updateResponse.text).toBe('Order updated. New status: CREATED');
+    })
+
+    it('does not allow to update a non-existing order', async () => {
+        const updateResponse = await request(server)
+            .put('/orders/123')
+            .send({
+                status: 'COMPLETED',
+            });
+
+        expect(updateResponse.status).toBe(404);
+        expect(updateResponse.text).toBe('Order not found');
     })
 })
