@@ -84,9 +84,9 @@ export const completeOrder = async (req: Request, res: Response) => {
 
     const order = await OrderModel.findById(id);
     if (!order) {
-        return res.send('Order not found to complete');
+        return res.status(400).send('Order not found to complete');
     }
-
+    console.log('order', order);
     if (order.status !== 'CREATED') {
         return res.status(400).send(`Cannot complete an order with status: ${order.status}`);
     }
