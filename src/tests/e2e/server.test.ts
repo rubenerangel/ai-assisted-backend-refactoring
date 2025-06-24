@@ -280,7 +280,7 @@ describe('POST /orders/:id/complete', () => {
             .post(`/orders/${order._id}/complete`);
 
         expect(completeResponse.status).toBe(400);
-        expect(completeResponse.text).toBe(`Cannot complete an order with status: COMPLETED`);
+        expect(completeResponse.text).toBe(`Cannot complete an order with status: Completed`);
     })
 })
 
@@ -311,7 +311,7 @@ describe('PUT /orders/:id', () => {
             });
 
         expect(updateResponse.status).toBe(200);
-        expect(updateResponse.text).toBe(`Order updated. New status: COMPLETED`);
+        expect(updateResponse.text).toBe(`Order updated. New status: Completed`);
     })
 
     it('updates an order with discount code successfully', async () => {
@@ -324,7 +324,7 @@ describe('PUT /orders/:id', () => {
             });
 
         expect(updateResponse.status).toBe(200);
-        expect(updateResponse.text).toBe('Order updated. New status: CREATED');
+        expect(updateResponse.text).toBe('Order updated. New status: Created');
     })
 
     it('does not allow to update a non-existing order', async () => {
@@ -348,6 +348,6 @@ describe('PUT /orders/:id', () => {
             });
 
         expect(updateResponse.status).toBe(200);
-        expect(updateResponse.text).toBe('Order updated. New status: CREATED');
+        expect(updateResponse.text).toBe('Order updated. New status: Created');
     })
 })

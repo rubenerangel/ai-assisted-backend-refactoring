@@ -7,7 +7,7 @@ export class Order {
         readonly id: Id,
         readonly items: OrderLine[],
         readonly shippingAddress: Address,
-        readonly status: OrderStatus,
+        private status: OrderStatus,
         readonly discountCode?: DiscountCode,
         readonly total?: number
     ) {}
@@ -24,14 +24,18 @@ export class Order {
         const total = this.items.reduce((total: PositiveNumber, item) =>
             total.add(item.calculateSubTotal()), PositiveNumber.create(0));
 
-        return this.applyDiscount(total);
-    }
-
-    private applyDiscount(total: PositiveNumber) {
         if (this.discountCode === 'DISCOUNT20') {
             return total.multiply(PositiveNumber.create(0.8))
         }
 
         return total
+    }
+
+    complete() {
+        this.status = OrderStatus.Completed;
+    }
+
+    isCompleted() {
+        return this.status === OrderStatus.Completed;
     }
 }

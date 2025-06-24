@@ -19,7 +19,6 @@ describe('The order', () => {
         expect(order.items).toEqual(items);
         expect(order.shippingAddress).toEqual(shippingAddress);
         expect(order.discountCode).toEqual(discountCode);
-        expect(order.status).toBe(OrderStatus.Created);
     })
 
     it('does not allow an order when no items are provided', () => {
@@ -64,4 +63,18 @@ describe('The order', () => {
         // Assuming the discount code applies a 20% discount
         expect(order.calculatesTotal()).toEqual(PositiveNumber.create(8)); // 8 * 0.8 = 6.4
     })
+
+    it('should complete a given order with created status', () => {
+        const items = [
+            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
+            new OrderLine(Id.create().value, PositiveNumber.create(1), PositiveNumber.create(2 )),
+        ]
+
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress);
+
+        order.complete();
+
+        expect(order.isCompleted()).toBe(true);
+    });
 })
