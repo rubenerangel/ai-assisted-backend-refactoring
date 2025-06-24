@@ -77,4 +77,16 @@ describe('The order', () => {
 
         expect(order.isCompleted()).toBe(true);
     });
+
+    it('does not allow to complete an order with no created status', () => {
+        const items = [
+            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
+        ]
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress);
+
+        order.complete();
+
+        expect(() => order.complete()).toThrow(`Cannot complete an order with status: ${OrderStatus.Completed}`);
+    })
 })
