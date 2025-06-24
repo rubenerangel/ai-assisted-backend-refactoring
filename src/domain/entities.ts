@@ -1,4 +1,4 @@
-import {Address, Id, OrderLine} from "./valueObject";
+import {Address, Id, OrderLine, PositiveNumber} from "./valueObject";
 import {DiscountCode, OrderStatus} from "./models";
 import {DomainError} from "./error";
 
@@ -17,5 +17,17 @@ export class Order {
             throw new DomainError('The order must have at least one item');
         }
         return new Order(Id.create(), items, shippingAddress, OrderStatus.Created, discountCode);
+    }
+
+    calculatesTotal() {
+        // return this.items[0].calculateSubTotal()
+        const total = this.items.reduce((total: PositiveNumber, item) =>
+            total.add(item.calculateSubTotal()), PositiveNumber.create(0));
+
+        if (this.discountCode === 'DISCOUNT20') {
+            return total.multiply(PositiveNumber.create(0.8))
+        }
+
+        return total
     }
 }
