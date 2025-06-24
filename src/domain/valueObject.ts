@@ -38,11 +38,15 @@ export class Id {
     static create(): Id {
         return new Id(uuid());
     }
+
+    static from(value: string): Id {
+        return new Id(value);
+    }
 }
 
 export class OrderLine {
     constructor(
-        readonly productId: string,
+        readonly productId: Id,
         readonly quantity: PositiveNumber,
         readonly price: PositiveNumber
     ) {}
