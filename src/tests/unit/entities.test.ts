@@ -5,8 +5,8 @@ import {OrderStatus} from "../../domain/models";
 describe('The order', () => {
     it('creates an order with the given fields are valid', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
-            new OrderLine(Id.create().value, PositiveNumber.create(1), PositiveNumber.create(2 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+            new OrderLine(Id.create(), PositiveNumber.create(1), PositiveNumber.create(2 )),
         ];
 
         const discountCode = 'DISCOUNT20';
@@ -30,7 +30,7 @@ describe('The order', () => {
 
     it('calculates the total price of a given order with a single line', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
         ]
         const shippingAddress = Address.create('123 Main St, Springfield, USA');
 
@@ -41,8 +41,8 @@ describe('The order', () => {
 
     it('calculates the total price of a given order with multiple lines', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
-            new OrderLine(Id.create().value, PositiveNumber.create(1), PositiveNumber.create(2 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+            new OrderLine(Id.create(), PositiveNumber.create(1), PositiveNumber.create(2 )),
         ]
 
         const shippingAddress = Address.create('123 Main St, Springfield, USA');
@@ -53,8 +53,8 @@ describe('The order', () => {
 
     it('calculates the total price of a given order with multiple lines and a discount', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(4 )),
-            new OrderLine(Id.create().value, PositiveNumber.create(1), PositiveNumber.create(2 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(4 )),
+            new OrderLine(Id.create(), PositiveNumber.create(1), PositiveNumber.create(2 )),
         ]
 
         const shippingAddress = Address.create('123 Main St, Springfield, USA');
@@ -66,8 +66,8 @@ describe('The order', () => {
 
     it('should complete a given order with created status', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
-            new OrderLine(Id.create().value, PositiveNumber.create(1), PositiveNumber.create(2 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+            new OrderLine(Id.create(), PositiveNumber.create(1), PositiveNumber.create(2 )),
         ]
 
         const shippingAddress = Address.create('123 Main St, Springfield, USA');
@@ -80,7 +80,7 @@ describe('The order', () => {
 
     it('does not allow to complete an order with no created status', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(3 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
         ]
         const shippingAddress = Address.create('123 Main St, Springfield, USA');
         const order = Order.create(items, shippingAddress);
@@ -92,7 +92,7 @@ describe('The order', () => {
 
     it('transforms an order to a DTO', () => {
         const items = [
-            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(4 )),
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(4 )),
         ]
 
         const shippingAddress = Address.create('123 Main St, Springfield, USA');
@@ -102,7 +102,7 @@ describe('The order', () => {
 
         expect(dto.id).toBe(order.id.value);
         expect(dto.items).toEqual(items.map(item => ({
-            productId: item.productId,
+            productId: item.productId.value,
             quantity: item.quantity.value,
             price: item.price.value
         })))

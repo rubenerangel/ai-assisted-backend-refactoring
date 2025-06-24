@@ -7,32 +7,34 @@ import {DomainError} from "../domain/error";
 
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
-    return createOrderNew(req, res);
-    // console.log("POST /orders");
-    // const { items, discountCode, shippingAddress } = req.body;
-    //
-    // if (!items || !Array.isArray(items) || items.length === 0) {
-    //     return res.status(400).send('The order must have at least one item');
-    // }
-    //
-    // let total = 0;
-    // for (const item of items) {
-    //     total += (item.price || 0) * (item.quantity || 0);
-    // }
-    //
-    // if (discountCode === 'DISCOUNT20') {
-    //     total = total * 0.8;
-    // }
-    //
-    // const newOrder = new OrderModel({
-    //     items,
-    //     discountCode,
-    //     shippingAddress,
-    //     total,
-    // });
-    //
-    // await newOrder.save();
-    // res.send(`Order created with total: ${total}`);
+    console.log("POST /orders");
+    try {
+        const { items, discountCode, shippingAddress } = req.body;
+        const orderLines = items.map((item:any) => (
+            new OrderLine(
+                Id.from(item.productId),
+                PositiveNumber.create(item.quantity),
+                PositiveNumber.create(item.price)
+            )
+        ))
+        const order = Order.create(orderLines, Address.create(shippingAddress), discountCode);
+        const orderDTO = order.toDTO();
+        const newOrder = new OrderModel({
+            _id: orderDTO.id,
+            items: orderDTO.items,
+            discountCode: orderDTO.discountCode,
+            shippingAddress: orderDTO.shippingAddress,
+            total: order.calculatesTotal().value,
+        });
+
+        await newOrder.save();
+        res.send(`Order created with total: ${order.calculatesTotal().value}`);
+    } catch (error) {
+        if (error instanceof DomainError) {
+            return res.status(400).send(error.message);
+        }
+        res.status(500).send('Unexpected error');
+    }
 };
 
 // Get all orders
@@ -114,36 +116,5 @@ export const deleteOrder = async (req: Request, res: Response) => {
     }
     catch (error) {
         res.status(500).send('Server error while deleting order');
-    }
-};
-
-export const createOrderNew = async (req: Request, res: Response) => {
-    console.log("POST /orders");
-    try {
-        const { items, discountCode, shippingAddress } = req.body;
-        const orderLines = items.map((item:any) => (
-            new OrderLine(
-                Id.from(item.productId),
-                PositiveNumber.create(item.quantity),
-                PositiveNumber.create(item.price)
-            )
-        ))
-        const order = Order.create(orderLines, Address.create(shippingAddress), discountCode);
-        const orderDTO = order.toDTO();
-        const newOrder = new OrderModel({
-            _id: orderDTO.id,
-            items: orderDTO.items,
-            discountCode: orderDTO.discountCode,
-            shippingAddress: orderDTO.shippingAddress,
-            total: order.calculatesTotal().value,
-        });
-
-        await newOrder.save();
-        res.send(`Order created with total: ${order.calculatesTotal().value}`);
-    } catch (error) {
-        if (error instanceof DomainError) {
-            return res.status(400).send(error.message);
-        }
-        res.status(500).send('Unexpected error');
     }
 };

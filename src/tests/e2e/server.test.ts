@@ -54,7 +54,7 @@ describe('POST /orders', () => {
 
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
-        server = await createServer(3003, dbUrl)
+        server = createServer(3003, dbUrl)
     });
 
     afterAll(() => {

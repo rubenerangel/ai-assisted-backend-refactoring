@@ -47,7 +47,7 @@ export class Order {
         return {
             id: this.id.value,
             items: this.items.map(item => ({
-                productId: item.productId,
+                productId: item.productId.value,
                 quantity: item.quantity.value,
                 price: item.price.value
             })),
