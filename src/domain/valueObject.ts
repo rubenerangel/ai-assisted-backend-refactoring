@@ -11,8 +11,8 @@ export class PositiveNumber {
         return new PositiveNumber(value);
     }
 
-    multiply(anotherPositiveNumber: PositiveNumber): PositiveNumber {
-        return PositiveNumber.create(this.value * anotherPositiveNumber.value);
+    multiply(number: PositiveNumber): PositiveNumber {
+        return PositiveNumber.create(this.value * number.value);
     }
 }
 
