@@ -89,4 +89,25 @@ describe('The order', () => {
 
         expect(() => order.complete()).toThrow(`Cannot complete an order with status: ${OrderStatus.Completed}`);
     })
+
+    it('transforms an order to a DTO', () => {
+        const items = [
+            new OrderLine(Id.create().value, PositiveNumber.create(2), PositiveNumber.create(4 )),
+        ]
+
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress, 'DISCOUNT20');
+
+        const dto = order.toDTO();
+
+        expect(dto.id).toBe(order.id.value);
+        expect(dto.items).toEqual(items.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity.value,
+            price: item.price.value
+        })))
+        expect(dto.shippingAddress).toBe(shippingAddress.value);
+        expect(dto.status).toBe(OrderStatus.Created);
+        expect(dto.discountCode).toBe(order.discountCode);
+    })
 })
