@@ -24,6 +24,10 @@ export class Order {
         const total = this.items.reduce((total: PositiveNumber, item) =>
             total.add(item.calculateSubTotal()), PositiveNumber.create(0));
 
+        return this.applyDiscount(total);
+    }
+
+    private applyDiscount(total: PositiveNumber) {
         if (this.discountCode === 'DISCOUNT20') {
             return total.multiply(PositiveNumber.create(0.8))
         }
