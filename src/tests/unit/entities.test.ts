@@ -110,4 +110,24 @@ describe('The order', () => {
         expect(dto.status).toBe(OrderStatus.Created);
         expect(dto.discountCode).toBe(order.discountCode);
     })
+
+    it('creates an order from a DTO', () => {
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(4 )),
+        ]
+
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress, 'DISCOUNT20');
+
+        const dto = order.toDTO();
+        const newOrder = Order.fromDTO(dto);
+
+        expect(newOrder.id.value).toBe(dto.id); //TODO: aqui quede
+        expect(newOrder.items.map((item: OrderLine) => item.productId.value)).toEqual(dto.items.map(item => item.productId));
+        expect(newOrder.items.map((item: OrderLine) => item.quantity.value)).toEqual(dto.items.map(item => item.quantity));
+        expect(newOrder.items.map((item: OrderLine) => item.price.value)).toEqual(dto.items.map(item => item.price));
+        expect(newOrder.items).toEqual(order.items);
+        expect(newOrder.shippingAddress).toEqual(order.shippingAddress);
+        expect(newOrder.discountCode).toEqual(order.discountCode);
+    })
 })
