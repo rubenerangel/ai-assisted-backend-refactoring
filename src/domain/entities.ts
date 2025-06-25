@@ -2,6 +2,14 @@ import {Address, Id, OrderLine, PositiveNumber} from "./valueObject";
 import {DiscountCode, OrderStatus} from "./models";
 import {DomainError} from "./error";
 
+type OrderDTO = {
+    id: string;
+    items: { productId: string; quantity: number; price: number }[];
+    shippingAddress: string;
+    status: OrderStatus;
+    discountCode: "DISCOUNT20" | undefined
+};
+
 export class Order {
     constructor(
         readonly id: Id,
@@ -57,13 +65,7 @@ export class Order {
         }
     }
 
-    static fromDTO(dto: {
-        id: string;
-        items: { productId: string; quantity: number; price: number }[];
-        shippingAddress: string;
-        status: OrderStatus;
-        discountCode: "DISCOUNT20" | undefined
-    }) {
+    static fromDTO(dto: OrderDTO) {
         return new Order(
             Id.from(dto.id),
             dto.items.map(item => new OrderLine(
