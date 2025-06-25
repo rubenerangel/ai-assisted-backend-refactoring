@@ -122,7 +122,7 @@ describe('The order', () => {
         const dto = order.toDTO();
         const newOrder = Order.fromDTO(dto);
 
-        expect(newOrder.id.value).toBe(dto.id); //TODO: aqui quede
+        expect(newOrder.id.value).toBe(dto.id);
         expect(newOrder.items.map((item: OrderLine) => item.productId.value)).toEqual(dto.items.map(item => item.productId));
         expect(newOrder.items.map((item: OrderLine) => item.quantity.value)).toEqual(dto.items.map(item => item.quantity));
         expect(newOrder.items.map((item: OrderLine) => item.price.value)).toEqual(dto.items.map(item => item.price));

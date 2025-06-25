@@ -269,8 +269,9 @@ describe('POST /orders/:id/complete', () => {
             .post('/orders/123/complete');
 
         expect(completeResponse.status).toBe(400);
-        expect(completeResponse.text).toBe('Order not found to complete');
+        expect(completeResponse.text).toBe('Order not found to complete with id: 123');
     })
+
     it('does not allow to complete an order with status different than CREATED', async () => {
         const order = await createAValidOrder(server);
         await request(server)
@@ -280,7 +281,7 @@ describe('POST /orders/:id/complete', () => {
             .post(`/orders/${order._id}/complete`);
 
         expect(completeResponse.status).toBe(400);
-        expect(completeResponse.text).toBe(`Cannot complete an order with status: Completed`);
+        expect(completeResponse.text).toBe(`Cannot complete an order with status: Completed can be completed`);
     })
 })
 

@@ -87,20 +87,40 @@ export const updateOrder = async (req: Request, res: Response) => {
 // Complete order
 export const completeOrder = async (req: Request, res: Response) => {
     console.log("POST /orders/:id/complete");
-    const { id } = req.params;
-
-    const order = await OrderModel.findById(id);
-    if (!order) {
-        return res.status(400).send('Order not found to complete');
+    try {
+        const { id } = req.params;
+        const orderDocument = await OrderModel.findById(id);
+        if (!orderDocument) {
+            return res.status(400).send(`Order not found to complete with id: ${id}`);
+        }
+        console.log('order', orderDocument);
+        const orderDTO = {
+            id: orderDocument._id,
+            items: orderDocument.items,
+            shippingAddress: orderDocument.shippingAddress,
+            status: orderDocument.status as OrderStatus,
+            discountCode: orderDocument.discountCode,
+        }
+        const order = Order.fromDTO(orderDTO);
+        order.complete();
+        const orderDTOToUpdate = order.toDTO();
+        const orderDocumentToUpdate = new OrderModel({
+            _id: orderDTOToUpdate.id,
+            items: orderDTOToUpdate.items,
+            shippingAddress: orderDTOToUpdate.shippingAddress,
+            status: orderDTOToUpdate.status,
+            discountCode: orderDTOToUpdate.discountCode,
+            total: order.calculatesTotal().value, // Assuming you want to update the total as well
+        })
+        await OrderModel.findOneAndReplace({_id: id}, orderDocumentToUpdate, { new: true });
+        res.send(`Order with id ${id} completed`);
+    } catch (error) {
+        if (error instanceof DomainError) {
+            return res.status(400).send(error.message);
+        }
+        res.status(500).send('Unexpected error');
     }
-    console.log('order', order);
-    if (order.status !== OrderStatus.Created) {
-        return res.status(400).send(`Cannot complete an order with status: ${order.status}`);
-    }
 
-    order.status = OrderStatus.Completed;
-    await order.save();
-    res.send(`Order with id ${id} completed`);
 };
 
 // Delete order
