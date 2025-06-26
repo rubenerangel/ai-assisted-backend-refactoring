@@ -1,7 +1,7 @@
 import {OrderRepository} from "../../domain/repositories";
 import {Order} from "../../domain/entities";
 import {Id} from "../../domain/valueObject";
-import {MongooseOrder, OrderModel, OrderSchema} from "./orderModel";
+import {MongooseOrder, OrderSchema} from "./orderModel";
 import {OrderStatus} from "../../domain/models";
 import mongoose, { Model } from "mongoose";
 import {Mongoose} from "mongoose";
