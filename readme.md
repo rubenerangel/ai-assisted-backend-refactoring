@@ -22,7 +22,7 @@ Es el punto de partida que usaremos a lo largo de la masterclass para refactoriz
 - Node.js (versión 20 o superior)  
 - npm o yarn como gestor de paquetes  
 - MongoDB local o remoto  
-  - La conexión está hardcodeada en `app.ts`, puedes adaptarla según tu entorno.
+  - La conexión está hardcodeada en `server.ts`, puedes adaptarla según tu entorno.
 
 👉 Puedes seguir las instrucciones de instalación de MongoDB aquí:  
 https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/
