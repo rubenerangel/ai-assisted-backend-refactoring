@@ -4,9 +4,16 @@ import mongoose from "mongoose";
 import {OrderMongoRepository} from "../../infrastructure/repositories/orderMongoRepository";
 
 describe('The order Mongo Repository', () => {
+    let repository: OrderMongoRepository;
+
     beforeAll(async () => {
         const dbUrl = 'mongodb://127.0.0.1:27017/db_orders_mongo_repository';
-        await mongoose.connect(dbUrl)
+        repository = await OrderMongoRepository.create(dbUrl);
+        await mongoose.connection.dropDatabase();
+    })
+
+    afterEach(async () => {
+        // Clean up the database after each test
         await mongoose.connection.dropDatabase();
     })
 
@@ -18,7 +25,6 @@ describe('The order Mongo Repository', () => {
         ]
         const address = Address.create('123 Main St, Springfield, USA');
         const order = Order.create(items, address);
-        const repository = new OrderMongoRepository();
 
         // Act (Ejecución: Realizas la acción que quieres probar)
         await repository.save(order);
