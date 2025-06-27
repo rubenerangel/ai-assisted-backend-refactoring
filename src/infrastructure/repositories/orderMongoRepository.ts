@@ -18,16 +18,17 @@ export class OrderMongoRepository implements OrderRepository {
         const MongooseOrderModel = this.mongooseModel();
         const mongoOrder = await MongooseOrderModel.find()
 
-        return mongoOrder.map(mongoOrder =>
-            Order.fromDTO({
-                id: mongoOrder._id,
-                items: mongoOrder.items,
-                discountCode: mongoOrder.discountCode,
-                shippingAddress: mongoOrder.shippingAddress,
-                status: mongoOrder.status as OrderStatus,
-            })
-        );
+        return mongoOrder.map(this.toOrderEntity);
     }
+
+    private toOrderEntity = (order: MongooseOrder) =>
+        Order.fromDTO({
+            id: order._id,
+            items: order.items,
+            discountCode: order.discountCode,
+            shippingAddress: order.shippingAddress,
+            status: order.status as OrderStatus,
+        });
 
     async findById(id: Id): Promise<Order | undefined> {
         const MongooseOrderModel = this.mongooseModel();
