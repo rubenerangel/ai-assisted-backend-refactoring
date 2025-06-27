@@ -66,7 +66,7 @@ export class OrderMongoRepository implements OrderRepository {
         }
         return this.mongoClient.model<MongooseOrder>('Order', OrderSchema);
     }
-    delete(id: Id): Promise<void> {
-        throw new Error("Method not implemented.");
+    async delete(id: Id): Promise<void> {
+        await this.mongooseModel().findByIdAndDelete(id.value);
     }
 }

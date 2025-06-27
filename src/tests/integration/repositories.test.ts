@@ -59,4 +59,21 @@ describe('The order Mongo Repository', () => {
         expect(orders[0].toDTO()).toEqual(order1.toDTO());
         expect(orders[1].toDTO()).toEqual(order2.toDTO());
     })
+
+    it('deletes a previously saved order', async () => {
+        // Arrange
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+        ];
+        const address = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, address);
+        await repository.save(order);
+
+        // Act
+        await repository.delete(order.id);
+
+        //Assert
+        const orders = await repository.findAll();
+        expect(orders.length).toBe(0);
+    })
 })
