@@ -14,8 +14,19 @@ export class OrderMongoRepository implements OrderRepository {
         return new OrderMongoRepository(client);
     }
 
-    findAll(): Promise<Order[]> {
-        throw new Error("Method not implemented.");
+    async findAll(): Promise<Order[]> {
+        const MongooseOrderModel = this.mongooseModel();
+        const mongoOrder = await MongooseOrderModel.find()
+
+        return mongoOrder.map(mongoOrder =>
+            Order.fromDTO({
+                id: mongoOrder._id,
+                items: mongoOrder.items,
+                discountCode: mongoOrder.discountCode,
+                shippingAddress: mongoOrder.shippingAddress,
+                status: mongoOrder.status as OrderStatus,
+            })
+        );
     }
 
     async findById(id: Id): Promise<Order | undefined> {
