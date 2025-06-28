@@ -3,6 +3,16 @@ import {Order} from "../../domain/entities";
 import mongoose from "mongoose";
 import {OrderMongoRepository} from "../../infrastructure/repositories/orderMongoRepository";
 
+async function createValidOrder(repository: OrderMongoRepository) {
+    const items = [
+        new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3)),
+    ];
+    const address = Address.create('123 Main St, Springfield, USA');
+    const order = Order.create(items, address);
+    await repository.save(order);
+    return order;
+}
+
 describe('The order Mongo Repository', () => {
     let repository: OrderMongoRepository;
 
@@ -20,14 +30,15 @@ describe('The order Mongo Repository', () => {
     it('saves and retrieve a given new valid order', async () => {
         // expect(true).toBe(true);
         // Arrange (Preparación: Configuras todo lo necesario para ejecutar la prueba)
-        const items = [
-            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
-        ]
-        const address = Address.create('123 Main St, Springfield, USA');
-        const order = Order.create(items, address);
-
-        // Act (Ejecución: Realizas la acción que quieres probar)
-        await repository.save(order);
+        // const items = [
+        //     new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+        // ]
+        // const address = Address.create('123 Main St, Springfield, USA');
+        // const order = Order.create(items, address);
+        //
+        // // Act (Ejecución: Realizas la acción que quieres probar)
+        // await repository.save(order);
+        const order = await createValidOrder(repository);
 
         // Assert (Verificación: Compruebas que el resultado es el esperado)
         const savedOrder = await repository.findById(order.getId());
@@ -37,12 +48,13 @@ describe('The order Mongo Repository', () => {
 
     it('finds all previously saved orders', async () => {
         // Arrange
-        const items1 = [
-            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
-        ];
-        const address1 = Address.create('123 Main St, Springfield, USA');
-        const order1 = Order.create(items1, address1);
-        await repository.save(order1);
+        // const items1 = [
+        //     new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+        // ];
+        // const address1 = Address.create('123 Main St, Springfield, USA');
+        // const order1 = Order.create(items1, address1);
+        // await repository.save(order1);
+        const order = await createValidOrder(repository);
 
         const items2 = [
             new OrderLine(Id.create(), PositiveNumber.create(1), PositiveNumber.create(5 )),
@@ -56,18 +68,19 @@ describe('The order Mongo Repository', () => {
 
         // Assert
         expect(orders.length).toBe(2);
-        expect(orders[0].toDTO()).toEqual(order1.toDTO());
+        expect(orders[0].toDTO()).toEqual(order.toDTO());
         expect(orders[1].toDTO()).toEqual(order2.toDTO());
     })
 
     it('deletes a previously saved order', async () => {
         // Arrange
-        const items = [
-            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
-        ];
-        const address = Address.create('123 Main St, Springfield, USA');
-        const order = Order.create(items, address);
-        await repository.save(order);
+        // const items = [
+        //     new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+        // ];
+        // const address = Address.create('123 Main St, Springfield, USA');
+        // const order = Order.create(items, address);
+        // await repository.save(order);
+        const order = await createValidOrder(repository);
 
         // Act
         await repository.delete(order.getId());
@@ -79,12 +92,7 @@ describe('The order Mongo Repository', () => {
 
     it('updates a previously saved order', async () => {
         // Arrange
-        const items = [
-            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
-        ];
-        const address = Address.create('123 Main St, Springfield, USA');
-        const order = Order.create(items, address);
-        await repository.save(order);
+        const order = await createValidOrder(repository);
 
         // Act
         order.updateShippingAddress(Address.create('789 Oak St, Springfield, USA'));
