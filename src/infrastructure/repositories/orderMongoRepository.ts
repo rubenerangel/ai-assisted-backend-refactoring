@@ -48,15 +48,17 @@ export class OrderMongoRepository implements OrderRepository {
 
     async save(order: Order): Promise<void> {
         const dto = order.toDTO();
-        const MongooseOrderModel = this.mongooseModel();
-        const mongoOrder = new MongooseOrderModel({
-            _id: dto.id,
-            items: dto.items,
-            discountCode: dto.discountCode,
-            shippingAddress: dto.shippingAddress,
-            status: dto.status,
-        })
-        await mongoOrder.save();
+
+        await this.mongooseModel().findByIdAndUpdate(
+            {_id: dto.id},
+            {
+                items: dto.items,
+                discountCode: dto.discountCode,
+                shippingAddress: dto.shippingAddress,
+                status: dto.status
+            },
+            {upsert: true} //Upsert true if not exists, create a new one
+        );
     }
 
     private mongooseModel() {
@@ -66,6 +68,7 @@ export class OrderMongoRepository implements OrderRepository {
         }
         return this.mongoClient.model<MongooseOrder>('Order', OrderSchema);
     }
+
     async delete(id: Id): Promise<void> {
         await this.mongooseModel().findByIdAndDelete(id.value);
     }
