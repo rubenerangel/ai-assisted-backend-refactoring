@@ -30,8 +30,8 @@ describe('The order Mongo Repository', () => {
         await repository.save(order);
 
         // Assert (Verificación: Compruebas que el resultado es el esperado)
-        const savedOrder = await repository.findById(order.id);
-        expect(savedOrder?.shippingAddress).toEqual(order.shippingAddress);
+        const savedOrder = await repository.findById(order.getId());
+        expect(savedOrder?.toDTO().shippingAddress).toEqual(order.toDTO().shippingAddress);
         expect(savedOrder?.toDTO()).toEqual(order.toDTO());
     })
 
@@ -70,10 +70,29 @@ describe('The order Mongo Repository', () => {
         await repository.save(order);
 
         // Act
-        await repository.delete(order.id);
+        await repository.delete(order.getId());
 
         //Assert
         const orders = await repository.findAll();
         expect(orders.length).toBe(0);
+    })
+
+    it('updates a previously saved order', async () => {
+        // Arrange
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3 )),
+        ];
+        const address = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, address);
+        await repository.save(order);
+
+        // Act
+        order.updateShippingAddress(Address.create('789 Oak St, Springfield, USA'));
+        await repository.save(order);
+
+        // Assert
+        const updatedOrder = await repository.findById(order.getId());
+        expect(updatedOrder?.toDTO().shippingAddress).toEqual(order.toDTO().shippingAddress);
+        expect(updatedOrder?.toDTO()).toEqual(order.toDTO());
     })
 })

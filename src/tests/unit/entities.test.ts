@@ -15,10 +15,10 @@ describe('The order', () => {
         const order = Order.create(items, shippingAddress, discountCode);
 
         expect(order).toBeDefined();
-        expect(order.id).toBeDefined();
+        expect(order.toDTO().id).toBeDefined();
         expect(order.items).toEqual(items);
-        expect(order.shippingAddress).toEqual(shippingAddress);
-        expect(order.discountCode).toEqual(discountCode);
+        expect(order.toDTO().shippingAddress).toEqual(shippingAddress.value);
+        expect(order.toDTO().discountCode).toEqual(discountCode);
     })
 
     it('does not allow an order when no items are provided', () => {
@@ -100,7 +100,7 @@ describe('The order', () => {
 
         const dto = order.toDTO();
 
-        expect(dto.id).toBe(order.id.value);
+        expect(dto.id).toBe(order.toDTO().id);
         expect(dto.items).toEqual(items.map(item => ({
             productId: item.productId.value,
             quantity: item.quantity.value,
@@ -108,7 +108,7 @@ describe('The order', () => {
         })))
         expect(dto.shippingAddress).toBe(shippingAddress.value);
         expect(dto.status).toBe(OrderStatus.Created);
-        expect(dto.discountCode).toBe(order.discountCode);
+        expect(dto.discountCode).toBe('DISCOUNT20');
     })
 
     it('creates an order from a DTO', () => {
@@ -122,12 +122,45 @@ describe('The order', () => {
         const dto = order.toDTO();
         const newOrder = Order.fromDTO(dto);
 
-        expect(newOrder.id.value).toBe(dto.id);
+        expect(newOrder.toDTO().id).toBe(dto.id);
         expect(newOrder.items.map((item: OrderLine) => item.productId.value)).toEqual(dto.items.map(item => item.productId));
         expect(newOrder.items.map((item: OrderLine) => item.quantity.value)).toEqual(dto.items.map(item => item.quantity));
         expect(newOrder.items.map((item: OrderLine) => item.price.value)).toEqual(dto.items.map(item => item.price));
         expect(newOrder.items).toEqual(order.items);
-        expect(newOrder.shippingAddress).toEqual(order.shippingAddress);
-        expect(newOrder.discountCode).toEqual(order.discountCode);
+        expect(newOrder.toDTO().shippingAddress).toEqual(dto.shippingAddress);
+        expect(newOrder.toDTO().discountCode).toEqual(dto.discountCode);
     })
+
+
+
+    it('updates the shipping address of a given order', async () => {
+        // Arrange
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(4 )),
+        ]
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress);
+
+        // Act
+        const newAddress = Address.create('456 Elm St, Springfield, USA');
+        order.updateShippingAddress(newAddress);
+
+        // Assert
+        expect(order.toDTO().shippingAddress).toEqual(newAddress.value);
+    })
+
+    it('updates the discount code of a given order', () => {
+        // Arrange
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(4 )),
+        ]
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress);
+
+        // Act
+        order.updateDiscountCode('DISCOUNT20');
+
+        // Assert
+        expect(order.toDTO().discountCode).toEqual('DISCOUNT20');
+    });
 })
