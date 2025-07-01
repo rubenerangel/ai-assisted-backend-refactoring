@@ -1,44 +1,32 @@
-import { Request, Response } from 'express';
-import { OrderModel } from '../repositories/orderModel';
-import {OrderStatus} from "../../domain/models";
+import {Request, Response} from 'express';
 import {Address, Id, OrderLine, PositiveNumber} from "../../domain/valueObject";
 import {Order} from "../../domain/entities";
 import {DomainError} from "../../domain/error";
 import {Factory} from "../../factory";
+import {OrderRepository} from "../../domain/repositories";
+
+async function createOrderUseCase(requestOrder:any, repo: OrderRepository) {
+    const orderLines = requestOrder.items.map((item: any) => (
+        new OrderLine(
+            Id.from(item.productId),
+            PositiveNumber.create(item.quantity),
+            PositiveNumber.create(item.price)
+        )
+    ))
+    const order = Order.create(orderLines, Address.create(requestOrder.shippingAddress), requestOrder.discountCode);
+
+    await repo.save(order);
+    return `Order created with total: ${order.calculatesTotal().value}`;
+}
 
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
-    console.log("POST /orders");
-
     const repo = await Factory.getOrderRepository()
 
-
     try {
-        const { items, discountCode, shippingAddress } = req.body;
-        const orderLines = items.map((item:any) => (
-            new OrderLine(
-                Id.from(item.productId),
-                PositiveNumber.create(item.quantity),
-                PositiveNumber.create(item.price)
-            )
-        ))
-        const order = Order.create(orderLines, Address.create(shippingAddress), discountCode);
-        // const orderDTO = order.toDTO();
-
-        await repo.save(order);
-
-        // const newOrder = new OrderModel({
-        //     _id: orderDTO.id,
-        //     items: orderDTO.items,
-        //     discountCode: orderDTO.discountCode,
-        //     shippingAddress: orderDTO.shippingAddress,
-        //     total: order.calculatesTotal().value,
-        // });
-        //
-        // await newOrder.save();
-
-
-        res.send(`Order created with total: ${order.calculatesTotal().value}`);
+        const requestOrder = req.body;
+        let result = await createOrderUseCase(requestOrder, repo);
+        res.send(result);
     } catch (error) {
         if (error instanceof DomainError) {
             return res.status(400).send(error.message);
