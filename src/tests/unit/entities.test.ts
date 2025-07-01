@@ -163,4 +163,19 @@ describe('The order', () => {
         // Assert
         expect(order.toDTO().discountCode).toEqual('DISCOUNT20');
     });
+
+    it('updates the status of a given order', () => {
+        // Arrange
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(4 )),
+        ];
+        const shippingAddress = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, shippingAddress);
+
+        // Act
+        order.updateStatus(OrderStatus.Completed);
+
+        // Assert
+        expect(order.toDTO().status).toBe(OrderStatus.Completed);
+    });
 })
