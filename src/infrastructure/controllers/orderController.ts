@@ -9,6 +9,10 @@ import {Factory} from "../../factory";
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
     console.log("POST /orders");
+
+    const repo = await Factory.getOrderRepository()
+
+
     try {
         const { items, discountCode, shippingAddress } = req.body;
         const orderLines = items.map((item:any) => (
@@ -19,16 +23,21 @@ export const createOrder = async (req: Request, res: Response) => {
             )
         ))
         const order = Order.create(orderLines, Address.create(shippingAddress), discountCode);
-        const orderDTO = order.toDTO();
-        const newOrder = new OrderModel({
-            _id: orderDTO.id,
-            items: orderDTO.items,
-            discountCode: orderDTO.discountCode,
-            shippingAddress: orderDTO.shippingAddress,
-            total: order.calculatesTotal().value,
-        });
+        // const orderDTO = order.toDTO();
 
-        await newOrder.save();
+        await repo.save(order);
+
+        // const newOrder = new OrderModel({
+        //     _id: orderDTO.id,
+        //     items: orderDTO.items,
+        //     discountCode: orderDTO.discountCode,
+        //     shippingAddress: orderDTO.shippingAddress,
+        //     total: order.calculatesTotal().value,
+        // });
+        //
+        // await newOrder.save();
+
+
         res.send(`Order created with total: ${order.calculatesTotal().value}`);
     } catch (error) {
         if (error instanceof DomainError) {
