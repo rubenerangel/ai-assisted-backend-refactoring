@@ -222,7 +222,7 @@ describe('DELETE /orders/:id', () => {
         const order = await createAValidOrder(server);
 
         const deleteResponse = await request(server)
-            .delete(`/orders/${order._id}`);
+            .delete(`/orders/${order.id}`);
 
         expect(deleteResponse.status).toBe(200);
         expect(deleteResponse.text).toBe('Order deleted');
@@ -258,10 +258,10 @@ describe('POST /orders/:id/complete', () => {
         const order = await createAValidOrder(server);
 
         const completeResponse = await request(server)
-            .post(`/orders/${order._id}/complete`);
+            .post(`/orders/${order.id}/complete`);
 
         expect(completeResponse.status).toBe(200);
-        expect(completeResponse.text).toBe(`Order with id ${order._id} completed`);
+        expect(completeResponse.text).toBe(`Order with id ${order.id} completed`);
     })
 
     it('returns an error when trying to complete an order that does not exist', async () => {
@@ -275,10 +275,10 @@ describe('POST /orders/:id/complete', () => {
     it('does not allow to complete an order with status different than CREATED', async () => {
         const order = await createAValidOrder(server);
         await request(server)
-            .post(`/orders/${order._id}/complete`);
+            .post(`/orders/${order.id}/complete`);
 
         const completeResponse = await request(server)
-            .post(`/orders/${order._id}/complete`);
+            .post(`/orders/${order.id}/complete`);
 
         expect(completeResponse.status).toBe(400);
         expect(completeResponse.text).toBe(`Cannot complete an order with status: Completed can be completed`);
@@ -306,7 +306,7 @@ describe('PUT /orders/:id', () => {
         const order = await createAValidOrder(server);
 
         const updateResponse = await request(server)
-            .put(`/orders/${order._id}`)
+            .put(`/orders/${order.id}`)
             .send({
                 status: OrderStatus.Completed,
             });
@@ -319,7 +319,7 @@ describe('PUT /orders/:id', () => {
         const order = await createAValidOrder(server);
 
         const updateResponse = await request(server)
-            .put(`/orders/${order._id}`)
+            .put(`/orders/${order.id}`)
             .send({
                 discountCode: 'DISCOUNT20',
             });
@@ -343,7 +343,7 @@ describe('PUT /orders/:id', () => {
         const order = await createAValidOrder(server);
 
         const updateResponse = await request(server)
-            .put(`/orders/${order._id}`)
+            .put(`/orders/${order.id}`)
             .send({
                 shippingAddress: 'New Address 456',
             });
