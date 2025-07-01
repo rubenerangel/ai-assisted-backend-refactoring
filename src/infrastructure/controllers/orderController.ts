@@ -139,12 +139,20 @@ export const completeOrder = async (req: Request, res: Response) => {
 // Delete order
 export const deleteOrder = async (req: Request, res: Response) => {
     console.log("DELETE /orders/:id");
+
+    const repo = await Factory.getOrderRepository()
+    const { id } = req.params;
+
+    const order = await repo.findById(Id.from(id));
+
     try {
-        const deleteOrder = await OrderModel.findByIdAndDelete(req.params.id);
+        // await order.findByIdAndDelete(id);
         // console.log('deleteOrder', deleteOrder)
-        if(!deleteOrder) {
+        if(!order) {
             return res.status(404).send('Order not found');
         }
+        await repo.delete(order.getId())
+        // await OrderModel.findByIdAndDelete(id);
         res.send('Order deleted');
     }
     catch (error) {
