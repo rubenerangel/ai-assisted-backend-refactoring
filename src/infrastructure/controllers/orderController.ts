@@ -149,13 +149,16 @@ export const deleteOrder = async (req: Request, res: Response) => {
         // await order.findByIdAndDelete(id);
         // console.log('deleteOrder', deleteOrder)
         if(!order) {
-            return res.status(404).send('Order not found');
+            throw new DomainError('Order not found')
         }
         await repo.delete(order.getId())
         // await OrderModel.findByIdAndDelete(id);
         res.send('Order deleted');
     }
     catch (error) {
+        if (error instanceof DomainError) {
+            return res.status(404).send(error.message);
+        }
         res.status(500).send('Server error while deleting order');
     }
 };
