@@ -19,6 +19,17 @@ async function createOrderUseCase(requestOrder:any, repo: OrderRepository) {
     return `Order created with total: ${order.calculatesTotal().value}`;
 }
 
+async function getAllOrdersUseCase(repo: OrderRepository) {
+    const orders = await repo.findAll();
+    return orders.map(order => order.toDTO());
+}
+
+export const getAllOrders = async (_req: Request, res: Response) => {
+    const repo = await Factory.getOrderRepository();
+    const ordersDTO = await getAllOrdersUseCase(repo);
+    res.json(ordersDTO);
+};
+
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
     const repo = await Factory.getOrderRepository()
@@ -35,43 +46,33 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 };
 
-export const getAllOrders = async (_req: Request, res: Response) => {
-    const repo = await Factory.getOrderRepository()
-    const orders = await repo.findAll();
-    // console.log("GET /orders");
-    // const orders = await OrderModel.find();
+async function updateOrderUseCase(repo: OrderRepository, requestOrderUpdate:any) {
+    const order = await repo.findById(Id.from(requestOrderUpdate.id)) as Order;
 
-    const ordersDTO = orders.map(order => order.toDTO());
-    res.json(ordersDTO);
-};
+    if(!order) {
+        throw new DomainError(`Order not found`)
+    }
+    if (requestOrderUpdate.shippingAddress) {
+        order.updateShippingAddress(Address.create(requestOrderUpdate.shippingAddress));
+    }
+    if (requestOrderUpdate.status) {
+        order.updateStatus(requestOrderUpdate.status);
+    }
+    if (requestOrderUpdate.discountCode) {
+        order.updateDiscountCode(requestOrderUpdate.discountCode);
+    }
+
+    await repo.save(order);
+    return `Order updated. New status: ${order.toDTO().status}`;
+}
 
 // Update order
 export const updateOrder = async (req: Request, res: Response) => {
     const repo = await Factory.getOrderRepository();
 
     try {
-        const { id } = req.params;
-        const order = await repo.findById(Id.from(id));
-
-        if(!order) {
-            throw new DomainError(`Order not found`)
-        }
-
-        const { status, shippingAddress, discountCode } = req.body;
-        if (shippingAddress) {
-            order.updateShippingAddress(Address.create(shippingAddress));
-        }
-
-        if (status) {
-            order.updateStatus(status);
-        }
-
-        if(discountCode) {
-            order.updateDiscountCode(discountCode);
-        }
-
-        await repo.save(order);
-        res.send(`Order updated. New status: ${order.toDTO().status}`)
+        const requestOrderUpdate = {...req.body, id: req.params.id};
+        res.send(await updateOrderUseCase(repo, requestOrderUpdate));
     } catch (error) {
         if (error instanceof DomainError) {
             return res.status(404).send(error.message);
