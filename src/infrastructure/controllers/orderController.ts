@@ -24,6 +24,47 @@ async function getAllOrdersUseCase(repo: OrderRepository) {
     return orders.map(order => order.toDTO());
 }
 
+async function updateOrderUseCase(repo: OrderRepository, requestOrderUpdate:any) {
+    const order = await repo.findById(Id.from(requestOrderUpdate.id)) as Order;
+
+    if(!order) {
+        throw new DomainError(`Order not found`)
+    }
+    if (requestOrderUpdate.shippingAddress) {
+        order.updateShippingAddress(Address.create(requestOrderUpdate.shippingAddress));
+    }
+    if (requestOrderUpdate.status) {
+        order.updateStatus(requestOrderUpdate.status);
+    }
+    if (requestOrderUpdate.discountCode) {
+        order.updateDiscountCode(requestOrderUpdate.discountCode);
+    }
+
+    await repo.save(order);
+    return `Order updated. New status: ${order.toDTO().status}`;
+}
+
+async function completeOrderUseCase(repo: OrderRepository, id: string) {
+    const order = await repo.findById(Id.from(id)) as Order;
+
+    if(!order) {
+        throw new DomainError(`Order not found to complete with id: ${id}`)
+    }
+    order.complete();
+    await repo.save(order);
+    return `Order with id ${order.toDTO().id} completed`;
+}
+
+async function deleteOrderUseCase(repo: OrderRepository, id: string) {
+    const order = await repo.findById(Id.from(id)) as Order;
+
+    if(!order) {
+        throw new DomainError('Order not found')
+    }
+    await repo.delete(order.getId())
+    return 'Order deleted';
+}
+
 export const getAllOrders = async (_req: Request, res: Response) => {
     const repo = await Factory.getOrderRepository();
     const ordersDTO = await getAllOrdersUseCase(repo);
@@ -46,26 +87,6 @@ export const createOrder = async (req: Request, res: Response) => {
     }
 };
 
-async function updateOrderUseCase(repo: OrderRepository, requestOrderUpdate:any) {
-    const order = await repo.findById(Id.from(requestOrderUpdate.id)) as Order;
-
-    if(!order) {
-        throw new DomainError(`Order not found`)
-    }
-    if (requestOrderUpdate.shippingAddress) {
-        order.updateShippingAddress(Address.create(requestOrderUpdate.shippingAddress));
-    }
-    if (requestOrderUpdate.status) {
-        order.updateStatus(requestOrderUpdate.status);
-    }
-    if (requestOrderUpdate.discountCode) {
-        order.updateDiscountCode(requestOrderUpdate.discountCode);
-    }
-
-    await repo.save(order);
-    return `Order updated. New status: ${order.toDTO().status}`;
-}
-
 // Update order
 export const updateOrder = async (req: Request, res: Response) => {
     const repo = await Factory.getOrderRepository();
@@ -80,17 +101,6 @@ export const updateOrder = async (req: Request, res: Response) => {
         res.status(500).send('Unexpected error');
     }
 };
-
-async function completeOrderUseCase(repo: OrderRepository, id: string) {
-    const order = await repo.findById(Id.from(id)) as Order;
-
-    if(!order) {
-        throw new DomainError(`Order not found to complete with id: ${id}`)
-    }
-    order.complete();
-    await repo.save(order);
-    return `Order with id ${order.toDTO().id} completed`;
-}
 
 // Complete order
 export const completeOrder = async (req: Request, res: Response) => {
@@ -109,23 +119,12 @@ export const completeOrder = async (req: Request, res: Response) => {
 
 // Delete order
 export const deleteOrder = async (req: Request, res: Response) => {
-    console.log("DELETE /orders/:id");
-
     const repo = await Factory.getOrderRepository();
 
     try {
         const { id } = req.params;
-        const order = await repo.findById(Id.from(id));
-
-        // await order.findByIdAndDelete(id);
-        // console.log('deleteOrder', deleteOrder)
-
-        if(!order) {
-            throw new DomainError('Order not found')
-        }
-        await repo.delete(order.getId())
-        // await OrderModel.findByIdAndDelete(id);
-        res.send('Order deleted');
+        let result = await deleteOrderUseCase(repo, id);
+        res.send(result);
     }
     catch (error) {
         if (error instanceof DomainError) {
