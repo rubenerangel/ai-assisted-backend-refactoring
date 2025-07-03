@@ -99,6 +99,22 @@ describe('The order use case', () => {
         expect(result).toBe(`Order with id ${order.getId().value} completed`);
         expect(completedOrder?.toDTO().status).toBe(OrderStatus.Completed);
     })
+
+    it('deletes an order', async () => {
+        // Arrange
+        const order = createValidOrder();
+        const repository = new InMemoryOrderRepository();
+        await repository.save(order);
+
+        // Act
+        const useCase = new OrderUseCase(repository);
+        const ordersBeforeDeletion = await repository.findAll();  // 1st Assert
+        await useCase.deleteOrder(order.getId().value);
+
+        // Assert
+        expect(ordersBeforeDeletion.length).toBe(1); // 1st Assert
+        expect(await repository.findById(order.getId())).toBeUndefined();
+    })
 });
 
 function createValidOrder() {
