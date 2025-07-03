@@ -18,7 +18,7 @@ export class InMemoryOrderRepository implements OrderRepository {
     }
 
     async delete(id: Id): Promise<void> {
-        throw new Error("Method not implemented.");
+        this.orders = this.orders.filter(order => !order.getId().equals(id));
     }
 }
 
@@ -56,5 +56,25 @@ describe('The OrderRepository', () => {
         // Assert (Verificación: Compruebas que el resultado es el esperado)
         expect(orders.length).toBe(1);
         expect(orders[0].toDTO()).toEqual(order.toDTO());
+    })
+
+    it('deletes a previously saved order', async () => {
+        // Arrange
+        const items = [
+            new OrderLine(Id.create(), PositiveNumber.create(2), PositiveNumber.create(3)),
+        ];
+        const address = Address.create('123 Main St, Springfield, USA');
+        const order = Order.create(items, address);
+        const repository = new InMemoryOrderRepository();
+        await repository.save(order);
+
+        // Act
+        await repository.delete(order.getId());
+        const deletedOrder = await repository.findById(order.getId());
+        const orders = await repository.findAll();
+
+        // Assert (Verificación: Compruebas que el resultado es el esperado)
+        expect(deletedOrder).toBeUndefined();
+        expect(orders.length).toBe(0);
     })
 });
