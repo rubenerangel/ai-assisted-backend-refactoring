@@ -83,6 +83,22 @@ describe('The order use case', () => {
         expect(orders.length).toBe(1);
         expect(orders[0].id).toBe(order.getId().value);
     });
+
+    it('completes an order', async () => {
+        // Arrange
+        const order = createValidOrder();
+        const repository = new InMemoryOrderRepository();
+        await repository.save(order);
+
+        // Act
+        const useCase = new OrderUseCase(repository);
+        const result = await useCase.completeOrder(order.getId().value);
+        const completedOrder = await repository.findById(order.getId());
+
+        // Assert
+        expect(result).toBe(`Order with id ${order.getId().value} completed`);
+        expect(completedOrder?.toDTO().status).toBe(OrderStatus.Completed);
+    })
 });
 
 function createValidOrder() {
