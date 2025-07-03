@@ -1,8 +1,8 @@
 import express, {Request, RequestHandler, Response} from 'express';
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 import {completeOrder, createOrder, deleteOrder, getAllOrders, updateOrder} from './controllers/orderController';
 import {Factory} from "../factory";
-import {OrderUseCase} from "../application/orderUseCase";
+// import {OrderUseCase} from "../application/orderUseCase";
 
 export async function createServer(port: number) {
     // await mongoose

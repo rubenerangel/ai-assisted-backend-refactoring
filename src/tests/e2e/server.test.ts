@@ -33,7 +33,7 @@ describe('Status endpoint', () => {
     let server: Server;
 
     beforeAll(async () => {
-        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        // const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         const port: number = Number(process.env.PORT) || 3003;
         server = await createServer(port)
     });
@@ -53,7 +53,7 @@ describe('POST /orders', () => {
     let server: Server;
 
     beforeAll(async () => {
-        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        // const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         server = await createServer(3003)
     });
 
@@ -174,7 +174,7 @@ describe('GET /orders', () => {
     let server: Server;
 
     beforeAll(async () => {
-        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        // const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         server = await createServer(3003)
 
         await mongoose.connection.dropDatabase();
@@ -210,7 +210,7 @@ describe('GET /orders', () => {
 describe('DELETE /orders/:id', () => {
     let server: Server;
     beforeAll(async () => {
-        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        // const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         server = await createServer(3003)
     })
 
@@ -241,7 +241,7 @@ describe('POST /orders/:id/complete', () => {
     let server: Server;
 
     beforeAll(async () => {
-        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        // const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         server = await createServer(3003)
         await mongoose.connection.dropDatabase();
     });
@@ -289,7 +289,7 @@ describe('PUT /orders/:id', () => {
     let server: Server;
 
     beforeAll(async () => {
-        const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
+        // const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         server = await createServer(3003)
         await mongoose.connection.dropDatabase();
     });
