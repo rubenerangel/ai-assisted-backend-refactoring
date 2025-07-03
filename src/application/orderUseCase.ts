@@ -4,20 +4,21 @@ import {Address, Id, OrderLine, PositiveNumber} from "../domain/valueObject";
 import {Order} from "../domain/entities";
 import {DomainError} from "../domain/error";
 
-type RequestOrder = {
+export type RequestOrder = {
     items: {
         productId: string;
         quantity: number;
         price: number;
     }[];
     shippingAddress: string;
-    discountCode: DiscountCode;
+    discountCode?: DiscountCode;
 }
-type RequestOrderUpdate = {
+
+export type RequestOrderUpdate = {
     id: string;
     shippingAddress?: string;
     status: OrderStatus;
-    discountCode: DiscountCode;
+    discountCode?: DiscountCode;
 }
 
 export class OrderUseCase {
