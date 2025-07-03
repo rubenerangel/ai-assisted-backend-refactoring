@@ -32,10 +32,10 @@ async function createAValidOrder(server: Server, discountCode?: string) {
 describe('Status endpoint', () => {
     let server: Server;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
         const port: number = Number(process.env.PORT) || 3003;
-        server = createServer(port, dbUrl)
+        server = await createServer(port)
     });
 
     afterAll(() => {
@@ -54,7 +54,7 @@ describe('POST /orders', () => {
 
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
-        server = createServer(3003, dbUrl)
+        server = await createServer(3003)
     });
 
     afterAll(() => {
@@ -175,7 +175,7 @@ describe('GET /orders', () => {
 
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
-        server = await createServer(3003, dbUrl)
+        server = await createServer(3003)
 
         await mongoose.connection.dropDatabase();
     })
@@ -211,7 +211,7 @@ describe('DELETE /orders/:id', () => {
     let server: Server;
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
-        server = await createServer(3003, dbUrl)
+        server = await createServer(3003)
     })
 
     afterAll(() => {
@@ -242,7 +242,7 @@ describe('POST /orders/:id/complete', () => {
 
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
-        server = await createServer(3003, dbUrl)
+        server = await createServer(3003)
         await mongoose.connection.dropDatabase();
     });
 
@@ -290,7 +290,7 @@ describe('PUT /orders/:id', () => {
 
     beforeAll(async () => {
         const dbUrl: string = process.env.DB_URL || 'mongodb://127.0.0.1:27017/db_orders_test';
-        server = await createServer(3003, dbUrl)
+        server = await createServer(3003)
         await mongoose.connection.dropDatabase();
     });
 

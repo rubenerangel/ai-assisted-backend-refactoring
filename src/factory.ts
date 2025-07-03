@@ -1,6 +1,7 @@
 // import dotenv from "dotenv";
 import {OrderRepository} from "./domain/repositories";
 import {OrderMongoRepository} from "./infrastructure/repositories/orderMongoRepository";
+import {OrderUseCase} from "./application/orderUseCase";
 
 // dotenv.config({
 //     path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
@@ -20,5 +21,10 @@ export class Factory {
         }
 
         return this.OrderRepository;
+    }
+
+    static async createOrderUseCase() {
+        const repo = await this.getOrderRepository();
+        return new OrderUseCase(repo);
     }
 }
