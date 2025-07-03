@@ -13,10 +13,10 @@ describe('The order use case', () => {
             shippingAddress: '123 Main St, Springfield, USA',
         }
         const repo = new InMemoryOrderRepository();
-        const order = new OrderUseCase(repo);
+        const useCase = new OrderUseCase(repo);
 
         // Act
-        const result = await order.createOrder(requestOrder);
+        const result = await useCase.createOrder(requestOrder);
         const orders = await repo.findAll();
 
         // Assert
@@ -35,10 +35,10 @@ describe('The order use case', () => {
             shippingAddress: '123 Main St, Springfield, USA',
         }
         const repo = new InMemoryOrderRepository();
-        const order = new OrderUseCase(repo);
+        const useCase = new OrderUseCase(repo);
 
         // Act
-        const result = await order.createOrder(requestOrder);
+        const result = await useCase.createOrder(requestOrder);
         const orders = await repo.findAll();
 
         // Assert
