@@ -62,6 +62,7 @@ describe('POST /orders', () => {
     })
 
     it('should create a new order successfully', async () => {
+        // Arrange
         const order = {
             items: [
                 {
@@ -73,12 +74,16 @@ describe('POST /orders', () => {
             shippingAddress: "Irrelevant Street 123",
         }
 
+        // Act
         const response = await request(server).post('/orders').send(order);
+
+        // Assert
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 100');
     })
 
     it('create a new order whit discount successfully', async () => {
+        // Arrange
         const order = {
             items: [
                 {
@@ -91,13 +96,16 @@ describe('POST /orders', () => {
             shippingAddress: "Irrelevant Street 123",
         }
 
+        // Act
         const response = await request(server).post('/orders').send(order);
 
+        // Assert
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 80');
     })
 
     it('creates a new order successfully', async () => {
+        // Arrange
         const order = {
             items: [
                 {
@@ -108,13 +116,17 @@ describe('POST /orders', () => {
             ],
             shippingAddress: "Irrelevant Street 123",
         };
+
+        // Act
         const response = await request(server).post('/orders').send(order);
 
+        // Assert
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 100');
     });
 
     it('creates a new order with discount successfully', async () => {
+        // Arrange
         const order = {
             items: [
                 {
@@ -126,8 +138,11 @@ describe('POST /orders', () => {
             shippingAddress: "Irrelevant Street 123",
             discountCode: 'DISCOUNT20'
         };
+
+        // Act
         const response = await request(server).post('/orders').send(order);
 
+        // Assert
         expect(response.status).toBe(200);
         expect(response.text).toBe('Order created with total: 80');
     });
